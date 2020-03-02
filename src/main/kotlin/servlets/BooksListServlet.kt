@@ -15,16 +15,16 @@ class BooksListServlet : HttpServlet() {
         val lang = req.getParameter("lang") ?: "en" //default lang is en
         val name = req.getParameter("name")
         fun getTable() = buildString {
-            val titles = ResourceBundle.getBundle("Book", Locale(lang))
+            val resources = ResourceBundle.getBundle("Book", Locale(lang))
             append("<html>")
-            append("<head><title>${titles.getString("title")}</title></head>")
+            append("<head><title>${resources.getString("title")}</title></head>")
             append("<body>")
-            append("<h1>${titles.getString("list")} ${name ?: ""}</h1>")
+            append("<h1>${resources.getString("list")} ${name ?: ""}</h1>")
             append("<table border='1'>")
             append("<tr>")
-            append("<td><b>${titles.getString("name")}</b></td>")
-            append("<td><b>${titles.getString("read")}</b></td>")
-            append("<td><b>${titles.getString("author")}</b></td>")
+            append("<td><b>${resources.getString("name")}</b></td>")
+            append("<td><b>${resources.getString("read")}</b></td>")
+            append("<td><b>${resources.getString("author")}</b></td>")
             append("</tr>")
             getBooksFromFile().filter { name == it.curReader }.forEach { append(it.toHtml()) }
             append("</table>")
@@ -38,11 +38,11 @@ class BooksListServlet : HttpServlet() {
     private fun getBooksFromFile() = mutableListOf<Book>().apply {
         //TODO to JSON using GSON
         File(FILE_PATH).forEachLine {
-            val splitted = it.split(' ')
-            val name = splitted[0]
-            val author = splitted[1]
-            val isRead = splitted[2].toBoolean()
-            val curReader = if (splitted.size > 3) splitted[3] else null
+            val split = it.split(' ')
+            val name = split[0]
+            val author = split[1]
+            val isRead = split[2].toBoolean()
+            val curReader = if (split.size > 3) split[3] else null
             add(Book(name, author, isRead, curReader))
         }
     }
