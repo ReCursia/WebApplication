@@ -1,7 +1,8 @@
 package servlets
 
 import models.Book
-import java.io.File
+import repository.BooksRepository
+import repository.BooksRepositoryImpl
 import java.util.*
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
@@ -10,11 +11,17 @@ import javax.servlet.http.HttpServletResponse
 
 @WebServlet(name = "BooksList", value = ["/books"])
 class BooksListServlet : HttpServlet() {
+
+    private val repository: BooksRepository = BooksRepositoryImpl()
+
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
+        res.sendRedirect(JSP_FILE_PATH)
+        /*
         req.characterEncoding = "utf-8"
         val lang = req.getParameter("lang") ?: "en" //default lang is en
         val name = req.getParameter("name")
-        fun getTable() = buildString {
+        res.contentType = "text/html;charset=UTF-8"
+        val table = buildString {
             val resources = ResourceBundle.getBundle("Book", Locale(lang))
             append("<html>")
             append("<head><title>${resources.getString("title")}</title></head>")
@@ -26,28 +33,26 @@ class BooksListServlet : HttpServlet() {
             append("<td><b>${resources.getString("read")}</b></td>")
             append("<td><b>${resources.getString("author")}</b></td>")
             append("</tr>")
-            getBooksFromFile().filter { name == it.curReader }.forEach { append(it.toHtml()) }
+            repository.getAllBooks().forEach { append(it.toHtml()) }
             append("</table>")
             append("</body>")
             append("</html>")
         }
-        res.contentType = "text/html;charset=UTF-8"
-        res.writer.write(getTable())
+        res.writer.write(table)
+
+         */
     }
 
-    private fun getBooksFromFile() = mutableListOf<Book>().apply {
-        //TODO to JSON using GSON
-        File(FILE_PATH).forEachLine {
-            val split = it.split(' ')
-            val name = split[0]
-            val author = split[1]
-            val isRead = split[2].toBoolean()
-            val curReader = if (split.size > 3) split[3] else null
-            add(Book(name, author, isRead, curReader))
-        }
+    override fun doPost(req: HttpServletRequest, resp: HttpServletResponse?) {
+        req.characterEncoding = "utf-8"
+        val name = req.getParameter("name")
+        val author = req.getParameter("author")
+        val isRead = req.getParameter("read")?.toBoolean() ?: false
+        val curReader = req.getParameter("reader")
+        repository.addBook(Book(name, author, isRead, curReader))
     }
 
     companion object {
-        private const val FILE_PATH = "D:\\Projects\\WebApplication\\books.txt"
+        private const val JSP_FILE_PATH = "BookList.jsp"
     }
 }

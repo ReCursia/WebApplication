@@ -14,6 +14,6 @@
         throw new IllegalArgumentException("Name expected");
 %>
 <h1> Список книг читателя <%=name%></h1>
-<%@include file="ListData.jsp"%>
+<%@include file="/jsp/ListData.jsp"%>
 </body>
 </html>
