@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" errorPage="/jsp/ErrorPage.jsp"%>
+         pageEncoding="UTF-8" errorPage="ErrorPage.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -14,6 +14,6 @@
         throw new IllegalArgumentException("Name expected");
 %>
 <h1> Список книг читателя <%=name%></h1>
-<%@include file="/jsp/ListData.jsp"%>
+<%@include file="ListData.jsp"%>
 </body>
 </html>

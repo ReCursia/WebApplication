@@ -15,8 +15,7 @@ class BooksListServlet : HttpServlet() {
     private val repository: BooksRepository = BooksRepositoryImpl()
 
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
-        res.sendRedirect(JSP_FILE_PATH)
-        /*
+        //res.sendRedirect(JSP_FILE_PATH)
         req.characterEncoding = "utf-8"
         val lang = req.getParameter("lang") ?: "en" //default lang is en
         val name = req.getParameter("name")
@@ -39,8 +38,6 @@ class BooksListServlet : HttpServlet() {
             append("</html>")
         }
         res.writer.write(table)
-
-         */
     }
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse?) {
