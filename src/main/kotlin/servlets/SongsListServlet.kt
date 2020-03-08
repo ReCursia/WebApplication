@@ -15,7 +15,16 @@ class SongsListServlet : HttpServlet() {
     private val repository: SongsRepository = SongsRepositoryImpl()
 
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
-        //res.sendRedirect(JSP_FILE_PATH)
+        //Uncomment what you want to use
+        jspFlow(req, res)
+        //defaultFlow(req, res)
+    }
+
+    private fun jspFlow(req: HttpServletRequest, res: HttpServletResponse) {
+        res.sendRedirect(JSP_FILE_PATH)
+    }
+
+    private fun defaultFlow(req: HttpServletRequest, res: HttpServletResponse) {
         req.characterEncoding = "utf-8"
         val lang = req.getParameter("lang") ?: "en" //default lang is en
         val artist = req.getParameter("artist")
@@ -59,6 +68,6 @@ class SongsListServlet : HttpServlet() {
     }
 
     companion object {
-        private const val JSP_FILE_PATH = "BookList.jsp"
+        private const val JSP_FILE_PATH = "SongList.jsp"
     }
 }
