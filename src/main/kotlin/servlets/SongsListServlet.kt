@@ -27,8 +27,8 @@ class SongsListServlet : HttpServlet() {
      */
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
         //Uncomment what you want to use
-        //jspFlow(req, res)
-        defaultFlow(req, res)
+        jspFlow(req, res)
+        //defaultFlow(req, res)
     }
 
     /**

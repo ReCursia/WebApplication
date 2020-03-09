@@ -8,6 +8,8 @@
     SongsRepository songsRepository = new SongsRepositoryImpl();
     List<Song> elements = songsRepository.getAllSongs();
     for (Song song : elements) {
-        out.write(song.toHtml());
+        if (song.getArtist().equals(artist)) {
+            out.write(song.toHtml());
+        }
     }
 %>
