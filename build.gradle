@@ -6,12 +6,14 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'org.akhikhl.gretty:gretty:+'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
 }
 
 apply plugin: 'kotlin'
 apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'org.jetbrains.dokka'
 
 repositories {
     jcenter()
@@ -26,4 +28,12 @@ dependencies {
 gretty {
     contextPath = '/'
     servletContainer = 'jetty9'
+}
+
+dokka {
+    outputFormat = "html"
+    outputDirectory = "$buildDir/dokka"
+    configuration {
+        includeNonPublic = true
+    }
 }

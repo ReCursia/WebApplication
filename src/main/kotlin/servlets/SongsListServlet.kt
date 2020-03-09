@@ -9,21 +9,44 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * This servlet shows list of songs (can accept parameters to add new songs, find songs of defined artist)
+ * Also you can play tracks if server has audio files for it
+ * @property repository songs repository
+ */
 @WebServlet(name = "SongsList", value = ["/songs"])
 class SongsListServlet : HttpServlet() {
 
     private val repository: SongsRepository = SongsRepositoryImpl()
 
+    /**
+     * GET request handler
+     * @param req http request
+     * @param res http response
+     * @return Unit
+     */
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
         //Uncomment what you want to use
         //jspFlow(req, res)
         defaultFlow(req, res)
     }
 
+    /**
+     * Use Java Server pages for web application
+     * @param req http request
+     * @param res http response
+     * @return Unit
+     */
     private fun jspFlow(req: HttpServletRequest, res: HttpServletResponse) {
         res.sendRedirect(JSP_FILE_PATH)
     }
 
+    /**
+     * Use default flow for web application (using writer)
+     * @param req http request
+     * @param res http response
+     * @return Unit
+     */
     private fun defaultFlow(req: HttpServletRequest, res: HttpServletResponse) {
         req.characterEncoding = "utf-8"
         val lang = req.getParameter("lang") ?: "en" //default lang is en
@@ -59,6 +82,12 @@ class SongsListServlet : HttpServlet() {
         res.writer.write(table)
     }
 
+    /**
+     * POST request handler
+     * @param req http request
+     * @param resp http response
+     * @return Unit
+     */
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse?) {
         req.characterEncoding = "utf-8"
         val title = req.getParameter("title")
