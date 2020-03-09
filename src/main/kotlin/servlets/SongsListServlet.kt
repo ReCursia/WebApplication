@@ -16,8 +16,8 @@ class SongsListServlet : HttpServlet() {
 
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
         //Uncomment what you want to use
-        jspFlow(req, res)
-        //defaultFlow(req, res)
+        //jspFlow(req, res)
+        defaultFlow(req, res)
     }
 
     private fun jspFlow(req: HttpServletRequest, res: HttpServletResponse) {
@@ -49,7 +49,9 @@ class SongsListServlet : HttpServlet() {
             append("<th><b>${resources.getString("genre")}</b></th>")
             append("<th><b>${resources.getString("play")}</b></th>")
             append("</tr>")
-            repository.getAllSongs().forEach { append(it.toHtml()) }
+            repository.getAllSongs()
+                .filter { req.getParameter("artist").isNullOrBlank() || req.getParameter("artist") == it.artist }
+                .forEach { append(it.toHtml()) }
             append("</table>")
             append("</body>")
             append("</html>")
