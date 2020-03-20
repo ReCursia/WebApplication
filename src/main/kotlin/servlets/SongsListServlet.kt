@@ -3,8 +3,10 @@ package servlets
 import models.Song
 import repository.SongsRepository
 import repository.SongsRepositoryImpl
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.servlet.annotation.WebServlet
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse
 @WebServlet(name = "SongsList", value = ["/songs"])
 class SongsListServlet : HttpServlet() {
 
+
     private val repository: SongsRepository = SongsRepositoryImpl()
 
     /**
@@ -27,8 +30,8 @@ class SongsListServlet : HttpServlet() {
      */
     override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
         //Uncomment what you want to use
-        jspFlow(req, res)
-        //defaultFlow(req, res)
+        //jspFlow(req, res)
+        defaultFlow(req, res)
     }
 
     /**
@@ -49,10 +52,16 @@ class SongsListServlet : HttpServlet() {
      */
     private fun defaultFlow(req: HttpServletRequest, res: HttpServletResponse) {
         req.characterEncoding = "utf-8"
-        val lang = req.getParameter("lang") ?: "en" //default lang is en
-        val artist = req.getParameter("artist")
         res.contentType = "text/html;charset=UTF-8"
-        val table = buildString {
+        //Getting lang (saved cookie)
+        val lang = req.getParameter("lang") ?: getLangFromCookiesOrNull(req) ?: "en"
+        res.addCookie(Cookie("lang", lang))
+
+        val artist = req.getParameter("artist")
+        val visitCount = req.session.getAttribute("count") as? Int ?: 0
+        val visitDate = req.session.getAttribute("date") as? String ?: getCurrentDate()
+
+        val content = buildString {
             val resources = ResourceBundle.getBundle("Song", Locale(lang))
             append("<html>")
             append("<head>")
@@ -73,14 +82,24 @@ class SongsListServlet : HttpServlet() {
             append("<th><b>${resources.getString("play")}</b></th>")
             append("</tr>")
             repository.getAllSongs()
-                .filter { req.getParameter("artist").isNullOrBlank() || req.getParameter("artist") == it.artist }
+                .filter { artist.isNullOrBlank() || artist == it.artist }
                 .forEach { append(it.toHtml()) }
             append("</table>")
+            append("<h3>${String.format(resources.getString("visit_date"), visitDate)}</h3>")
+            append("<h3>${String.format(resources.getString("visit_count"), visitCount)}")
             append("</body>")
             append("</html>")
         }
-        res.writer.write(table)
+        res.writer.write(content)
+        //save visit count and date
+        req.session.setAttribute("count", visitCount + 1)
+        req.session.setAttribute("date", getCurrentDate())
     }
+
+    private fun getCurrentDate() = SimpleDateFormat(DATE_PATTERN).format(Date())
+
+    private fun getLangFromCookiesOrNull(req: HttpServletRequest) =
+        req.cookies?.firstOrNull { it.name == "lang" }?.value
 
     /**
      * POST request handler
@@ -100,5 +119,6 @@ class SongsListServlet : HttpServlet() {
 
     companion object {
         private const val JSP_FILE_PATH = "SongList.jsp"
+        const val DATE_PATTERN = "dd/M/yyyy hh:mm:ss"
     }
 }

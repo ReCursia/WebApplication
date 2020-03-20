@@ -14,5 +14,13 @@
     "artist": "Комсомольск",
     "genre": "Alternative",
     "filePath": "komsomol.mp3"
+  },
+  {
+    "title": "We Appreciate Power",
+    "album": "Miss Anthropocene",
+    "year": 2020,
+    "artist": "Grimes",
+    "genre": "Electronic",
+    "filePath": "power.mp3"
   }
 ]
